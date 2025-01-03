@@ -124,4 +124,4 @@ RUN mkdir -p /usr/share/gradle /usr/share/gradle/ref \
 ENV PATH=$PATH:$GRADLE_HOME/bin
 
 # Set back to coder user
-USER coder
+USER ${USER}

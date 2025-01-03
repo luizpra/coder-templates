@@ -37,6 +37,18 @@ resource "coder_agent" "main" {
     # install and start code-server
     curl -fsSL https://code-server.dev/install.sh | sh -s -- --method=standalone --prefix=/tmp/code-server
     /tmp/code-server/bin/code-server --auth none --port 13337 >/tmp/code-server.log 2>&1 &
+
+    if [ -f "$HOME/.bashrc" ]; then
+      echo "Bash files already setup ..."
+      exit 0
+    fi
+
+    cp /etc/skel/.bashrc /home/${local.username}/
+
+    echo 'if [ -f "$HOME/.bashrc" ]; then
+       . "$HOME/.bashrc"
+    fi' | tee -a ~/.bash_profile
+
   EOT
 
   env = {

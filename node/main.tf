@@ -37,6 +37,19 @@ resource "coder_agent" "main" {
     # install and start code-server
     curl -fsSL https://code-server.dev/install.sh | sh -s -- --method=standalone --prefix=/tmp/code-server
     /tmp/code-server/bin/code-server --auth none --port 13337 >/tmp/code-server.log 2>&1 &
+
+    if [ -f "$HOME/.bashrc" ]; then
+      echo "Bash files already setup ..."
+      exit 0
+    fi
+
+    cp /etc/skel/.bashrc /home/${local.username}/
+
+    echo 'if [ -f "$HOME/.bashrc" ]; then
+       . "$HOME/.bashrc"
+    fi' | tee -a ~/.bash_profile
+
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
   EOT
 
   env = {
@@ -199,18 +212,3 @@ module "jupyter-notebook" {
   agent_id = coder_agent.main.id
 }
 
-module "nodejs" {
-  count              = data.coder_workspace.me.start_count
-  source             = "registry.coder.com/modules/nodejs/coder"
-  version            = "1.0.10"
-  agent_id           = coder_agent.main.id
-  nvm_version        = "v0.40.1"
-  nvm_install_prefix = "/opt/nvm"
-  node_versions = [
-    "16",
-    "18",
-    "10",
-    "node"
-  ]
-  default_node_version = "10"
-}
