@@ -204,11 +204,12 @@ module "filebrowser" {
   database_path = ".config/filebrowser.db"
 }
 
-module "jupyter-notebook" {
+module "jupyterlab" {
   count    = data.coder_workspace.me.start_count
-  source   = "registry.coder.com/modules/jupyter-notebook/coder"
-  version  = "1.0.19"
+  source   = "registry.coder.com/modules/jupyterlab/coder"
+  version  = "1.0.23"
   agent_id = coder_agent.main.id
+  subdomain = false
 }
 
 resource "coder_app" "vim" {
