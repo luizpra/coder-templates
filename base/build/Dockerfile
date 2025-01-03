@@ -38,6 +38,7 @@ RUN apt-get update && \
     jq \
     locales \
     man \
+    netcat-openbsd \
     pipx \
     python3 \
     python3-pip \
