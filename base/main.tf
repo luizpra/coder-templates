@@ -210,3 +210,11 @@ module "jupyter-notebook" {
   version  = "1.0.19"
   agent_id = coder_agent.main.id
 }
+
+resource "coder_app" "vim" {
+  agent_id     = coder_agent.main.id
+  slug         = "vim"
+  display_name = "Vim"
+  icon         = "${data.coder_workspace.me.access_url}/icon/ubuntu.svg"
+  command      = "vim"
+}

@@ -137,6 +137,17 @@ resource "coder_app" "code-server" {
   }
 }
 
+resource "coder_app" "angualr" {
+  agent_id     = coder_agent.main.id
+  slug         = "angular"
+  display_name = "angular"
+  icon         = "${data.coder_workspace.me.access_url}/icon/javascript.svg"
+  url          = "http://localhost:4200"
+  share        = "owner"
+  subdomain    = false 
+  open_in      = "window"
+}
+
 resource "docker_volume" "home_volume" {
   name = "coder-${data.coder_workspace.me.id}-home"
   # Protect the volume from being deleted due to changes in attributes.
