@@ -35,10 +35,12 @@ RUN apt-get update && \
     docker-buildx-plugin \
     docker-compose-plugin \
     htop \
+    iputils-ping \
     jq \
     locales \
     man \
     netcat-openbsd \
+    net-tools \
     pipx \
     python3 \
     python3-pip \

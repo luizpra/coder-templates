@@ -181,6 +181,9 @@ resource "docker_container" "workspace" {
     volume_name    = docker_volume.home_volume.name
     read_only      = false
   }
+  networks_advanced {
+    name = "coder"
+  }
 }
 
 module "jetbrains_gateway" {
