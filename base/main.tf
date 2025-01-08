@@ -207,6 +207,11 @@ module "filebrowser" {
   database_path = ".config/filebrowser.db"
 }
 
+module "docker" {
+  count    = data.coder_workspace.me.start_count
+  source   = "git::ssh://git@github.com/luizpra/modules.git//docker?ref=main"
+}
+
 module "jupyterlab" {
   count    = data.coder_workspace.me.start_count
   source   = "registry.coder.com/modules/jupyterlab/coder"
@@ -222,3 +227,4 @@ resource "coder_app" "vim" {
   icon         = "${data.coder_workspace.me.access_url}/icon/ubuntu.svg"
   command      = "vim"
 }
+
