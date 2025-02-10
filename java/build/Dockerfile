@@ -70,6 +70,7 @@ ENV LANGUAGE=en_US.UTF-8
 ENV LC_ALL=en_US.UTF-8
 
 ARG USER=coder
+ARG JAVA_VERSION=17
 
 RUN userdel -r ubuntu && \
     useradd --groups sudo --no-create-home --shell /bin/bash ${USER} \
@@ -82,8 +83,8 @@ USER root
 
 # Install JDK (OpenJDK 8)
 RUN DEBIAN_FRONTEND="noninteractive" apt-get update -y && \
-    apt-get install -y openjdk-17-jdk
-ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+    apt-get install -y openjdk-${JAVA_VERSION}-jdk
+ENV JAVA_HOME=/usr/lib/jvm/java-${JAVA_VERSION}-openjdk-amd64
 ENV PATH=$PATH:$JAVA_HOME/bin
 
 # Install Maven

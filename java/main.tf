@@ -28,6 +28,23 @@ data "coder_workspace" "me" {
 data "coder_workspace_owner" "me" {
 }
 
+data "coder_parameter" "java_version" {
+  name = "java-version"
+  description = "JDK runtime version"
+  type = "number"
+  default = 17
+  
+  option {
+    name = "17"
+    value = 17
+  }
+  
+  option {
+    name = "8"
+    value = 8
+  }
+}
+
 resource "coder_agent" "main" {
   arch                   = data.coder_provisioner.me.arch
   os                     = "linux"
@@ -151,6 +168,7 @@ resource "docker_image" "main" {
     context = "./build"
     build_args = {
       USER = local.username
+      JAVA_VERSION = data.coder_parameter.java_version.value
     }
     no_cache = true
   }
@@ -158,7 +176,6 @@ resource "docker_image" "main" {
     dir_sha1 = sha1(join("", [for f in fileset(path.module, "build/*") : filesha1(f)]))
   }
 }
-
 
 resource "docker_container" "workspace" {
   count = data.coder_workspace.me.start_count
@@ -180,6 +197,12 @@ resource "docker_container" "workspace" {
     container_path = "/home/${local.username}"
     volume_name    = docker_volume.home_volume.name
     read_only      = false
+  }
+
+  volumes {
+    host_path = "/var/run/docker.sock"
+    container_path = "/var/run/docker.sock"
+    read_only = true
   }
 }
 
