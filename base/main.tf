@@ -181,8 +181,10 @@ resource "docker_container" "workspace" {
     volume_name    = docker_volume.home_volume.name
     read_only      = false
   }
-  networks_advanced {
-    name = "coder"
+  volumes {
+    host_path      = "/var/run/docker.sock"
+    container_path = "/var/run/docker.sock"
+    read_only      = true
   }
 }
 
@@ -207,11 +209,6 @@ module "filebrowser" {
   database_path = ".config/filebrowser.db"
 }
 
-module "docker" {
-  count    = data.coder_workspace.me.start_count
-  source   = "git::ssh://git@github.com/luizpra/modules.git//docker?ref=main"
-}
-
 module "jupyterlab" {
   count    = data.coder_workspace.me.start_count
   source   = "registry.coder.com/modules/jupyterlab/coder"
@@ -219,12 +216,3 @@ module "jupyterlab" {
   agent_id = coder_agent.main.id
   subdomain = false
 }
-
-resource "coder_app" "vim" {
-  agent_id     = coder_agent.main.id
-  slug         = "vim"
-  display_name = "Vim"
-  icon         = "${data.coder_workspace.me.access_url}/icon/ubuntu.svg"
-  command      = "vim"
-}
-

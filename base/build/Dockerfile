@@ -4,6 +4,8 @@ SHELL ["/bin/bash", "-c"]
 
 ENV DEBIAN_FRONTEND=noninteractive
 
+RUN groupadd -g 999 docker
+
 # Install the Docker apt repository
 RUN apt-get update && \
     apt-get upgrade --yes --no-install-recommends --no-install-suggests && \
