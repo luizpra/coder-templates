@@ -74,20 +74,10 @@ ENV LC_ALL=en_US.UTF-8
 
 ARG USER=coder
 
-#RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
-#    apt-get install -y --no-install-recommends --no-install-suggests dbus-x11 libdatetime-perl openssl ssl-cert xfce4 xfce4-goodies && \
-#    rm /run/reboot-required* || true && \
-#    rm -rf /var/lib/apt/lists/*
-
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
-    apt-get install -y --no-install-recommends --no-install-suggests dbus-x11 libdatetime-perl openssl ssl-cert gnome-session gnome-terminal gnome-shell && \
+    apt-get install -y --no-install-recommends --no-install-suggests dbus-x11 libdatetime-perl openssl ssl-cert xfce4 xfce4-goodies && \
     rm /run/reboot-required* || true && \
     rm -rf /var/lib/apt/lists/*
-
-RUN echo 'LANG=en_US.UTF-8' >> /etc/default/locale; \
-    echo 'export GNOME_SHELL_SESSION_MODE=ubuntu' > /home/${USER}/.xsessionrc; \
-    echo 'export XDG_CURRENT_DESKTOP=xfce' >> /home/${USER}/.xsessionrc; \
-    echo 'export XDG_SESSION_TYPE=x11' >> /home/${USER}/.xsessionrc;
 
 RUN userdel -r ubuntu && \
     useradd --groups sudo --no-create-home --shell /bin/bash --uid ${USER_ID:-1000} ${USER} \
