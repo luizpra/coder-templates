@@ -88,15 +88,15 @@ ENV JAVA_HOME=/usr/lib/jvm/java-${JAVA_VERSION}-openjdk-amd64
 ENV PATH=$PATH:$JAVA_HOME/bin
 
 # Install Maven
-ARG MAVEN_VERSION=3.9.5
-ARG MAVEN_SHA512=4810523ba025104106567d8a15a8aa19db35068c8c8be19e30b219a1d7e83bcab96124bf86dc424b1cd3c5edba25d69ec0b31751c136f88975d15406cab3842b
+ARG MAVEN_VERSION=3.9.10
+ARG MAVEN_SHA512=4ef617e421695192a3e9a53b3530d803baf31f4269b26f9ab6863452d833da5530a4d04ed08c36490ad0f141b55304bceed58dbf44821153d94ae9abf34d0e1b
 
 ENV MAVEN_HOME=/usr/share/maven
 ENV MAVEN_CONFIG="/home/coder/.m2"
 
 RUN mkdir -p $MAVEN_HOME $MAVEN_HOME/ref \
   && echo "Downloading maven" \
-  && curl -fsSL -o /tmp/apache-maven.tar.gz https://apache.osuosl.org/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz \
+  && curl -fsSL -o /tmp/apache-maven.tar.gz https://dlcdn.apache.org/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz \
   && echo "Checking downloaded file hash" \
   && echo "${MAVEN_SHA512}  /tmp/apache-maven.tar.gz" | sha512sum -c - \
   && echo "Unzipping maven" \

@@ -3,6 +3,7 @@ FROM ubuntu
 SHELL ["/bin/bash", "-c"]
 
 ENV DEBIAN_FRONTEND=noninteractive
+ARG USER_ID=$USER_ID
 
 RUN groupadd -g 999 docker
 
@@ -21,9 +22,6 @@ RUN echo \
   "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
   $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
   tee /etc/apt/sources.list.d/docker.list > /dev/null
-
-#COPY docker-archive-keyring.gpg /usr/share/keyrings/docker-archive-keyring.gpg
-#COPY docker.list /etc/apt/sources.list.d/docker.list
 
 # Install baseline packages
 RUN apt-get update && \
@@ -76,8 +74,23 @@ ENV LC_ALL=en_US.UTF-8
 
 ARG USER=coder
 
+#RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
+#    apt-get install -y --no-install-recommends --no-install-suggests dbus-x11 libdatetime-perl openssl ssl-cert xfce4 xfce4-goodies && \
+#    rm /run/reboot-required* || true && \
+#    rm -rf /var/lib/apt/lists/*
+
+RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
+    apt-get install -y --no-install-recommends --no-install-suggests dbus-x11 libdatetime-perl openssl ssl-cert gnome-session gnome-terminal gnome-shell && \
+    rm /run/reboot-required* || true && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN echo 'LANG=en_US.UTF-8' >> /etc/default/locale; \
+    echo 'export GNOME_SHELL_SESSION_MODE=ubuntu' > /home/${USER}/.xsessionrc; \
+    echo 'export XDG_CURRENT_DESKTOP=xfce' >> /home/${USER}/.xsessionrc; \
+    echo 'export XDG_SESSION_TYPE=x11' >> /home/${USER}/.xsessionrc;
+
 RUN userdel -r ubuntu && \
-    useradd --groups sudo --no-create-home --shell /bin/bash ${USER} \
+    useradd --groups sudo --no-create-home --shell /bin/bash --uid ${USER_ID:-1000} ${USER} \
 	&& echo "${USER} ALL=(ALL) NOPASSWD:ALL" >/etc/sudoers.d/${USER} \
 	&& chmod 0440 /etc/sudoers.d/${USER}
 USER ${USER}

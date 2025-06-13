@@ -1,16 +1,22 @@
 terraform {
   required_providers {
     coder = {
-      source  = "coder/coder"
+      source = "coder/coder"
     }
     docker = {
-      source  = "kreuzwerker/docker"
+      source = "kreuzwerker/docker"
     }
   }
 }
 
 locals {
   username = data.coder_workspace_owner.me.name
+}
+
+variable "user_id" {
+  description = "User id on host system, used to set permissions on the home"
+  type        = number
+  default     = 999
 }
 
 data "coder_provisioner" "me" {
@@ -29,17 +35,25 @@ data "coder_workspace_owner" "me" {
 }
 
 resource "coder_agent" "main" {
-  arch                   = data.coder_provisioner.me.arch
-  os                     = "linux"
-  startup_script         = <<-EOT
+  arch           = data.coder_provisioner.me.arch
+  os             = "linux"
+  startup_script = <<-EOT
     set -e
 
-    # install and start code-server
-    curl -fsSL https://code-server.dev/install.sh | sh -s -- --method=standalone --prefix=/tmp/code-server
-    /tmp/code-server/bin/code-server --auth none --port 13337 >/tmp/code-server.log 2>&1 &
+    echo "showing permission:"
+    whoami
+    echo "creating home directory for user ${local.username} with uid ${var.user_id}"
+    sudo mkdir -p /home/${local.username} && sudo chown ${local.username}:${local.username} /home/${local.username}
+    echo "last command error: $?"
+    echo "home: $HOME"
+    ls -lah /home/
 
     if [ -f "$HOME/.bashrc" ]; then
       echo "Bash files already setup ..."
+      # install and start code-server
+      # removed from here when possible
+      curl -fsSL https://code-server.dev/install.sh | sh -s -- --method=standalone --prefix=/tmp/code-server
+      /tmp/code-server/bin/code-server --auth none --port 13337 >/tmp/code-server.log 2>&1 &
       exit 0
     fi
 
@@ -49,12 +63,16 @@ resource "coder_agent" "main" {
        . "$HOME/.bashrc"
     fi' | tee -a ~/.bash_profile
 
+    # install and start code-server
+    curl -fsSL https://code-server.dev/install.sh | sh -s -- --method=standalone --prefix=/tmp/code-server
+    /tmp/code-server/bin/code-server --auth none --port 13337 >/tmp/code-server.log 2>&1 &
+
   EOT
 
   env = {
-    GIT_AUTHOR_NAME     = coalesce(data.coder_workspace_owner.me.full_name, data.coder_workspace_owner.me.name)
+    GIT_AUTHOR_NAME = coalesce(data.coder_workspace_owner.me.full_name, data.coder_workspace_owner.me.name)
     GIT_AUTHOR_EMAIL    = "${data.coder_workspace_owner.me.email}"
-    GIT_COMMITTER_NAME  = coalesce(data.coder_workspace_owner.me.full_name, data.coder_workspace_owner.me.name)
+    GIT_COMMITTER_NAME = coalesce(data.coder_workspace_owner.me.full_name, data.coder_workspace_owner.me.name)
     GIT_COMMITTER_EMAIL = "${data.coder_workspace_owner.me.email}"
   }
 
@@ -100,13 +118,13 @@ resource "coder_agent" "main" {
 
   metadata {
     display_name = "Load Average (Host)"
-    key          = "6_load_host"
+    key = "6_load_host"
     # get load avg scaled by number of cores
-    script   = <<EOT
+    script       = <<EOT
       echo "`cat /proc/loadavg | awk '{ print $1 }'` `nproc`" | awk '{ printf "%0.2f", $1/$2 }'
     EOT
-    interval = 60
-    timeout  = 1
+    interval     = 60
+    timeout      = 1
   }
 
   metadata {
@@ -150,7 +168,8 @@ resource "docker_image" "main" {
   build {
     context = "./build"
     build_args = {
-      USER = local.username
+      USER    = local.username
+      USER_ID = var.user_id
     }
     no_cache = true
   }
@@ -168,7 +187,9 @@ resource "docker_container" "workspace" {
   # Hostname makes the shell more user friendly: coder@my-workspace:~$
   hostname = data.coder_workspace.me.name
   # Use the docker gateway if the access URL is 127.0.0.1
-  entrypoint = ["sh", "-c", replace(coder_agent.main.init_script, "/localhost|127\\.0\\.0\\.1/", "host.docker.internal")]
+  entrypoint = [
+    "sh", "-c", replace(coder_agent.main.init_script, "/localhost|127\\.0\\.0\\.1/", "host.docker.internal")
+  ]
   env = [
     "CODER_AGENT_TOKEN=${coder_agent.main.token}",
   ]
@@ -188,31 +209,40 @@ resource "docker_container" "workspace" {
   }
 }
 
-module "jetbrains_gateway" {
-  count          = data.coder_workspace.me.start_count
-  source         = "registry.coder.com/modules/jetbrains-gateway/coder"
-  version        = "1.0.25"
-  agent_id       = coder_agent.main.id
-  agent_name     = "main"
-  folder         = "/home/${local.username}"
-  jetbrains_ides = ["CL", "GO", "IU", "PY", "WS"]
-  default        = "IU"
+module "kasmvnc" {
+  count               = data.coder_workspace.me.start_count
+  source              = "registry.coder.com/coder/kasmvnc/coder"
+  version             = "1.2.0"
+  agent_id            = coder_agent.main.id
+  desktop_environment = "gnome"
+  subdomain           = true
 }
 
-module "filebrowser" {
-  count      = data.coder_workspace.me.start_count
-  source   = "registry.coder.com/modules/filebrowser/coder"
-  version  = "1.0.23"
-  agent_name = "main"
-  agent_id = coder_agent.main.id
-  subdomain  = false
-  database_path = ".config/filebrowser.db"
-}
-
-module "jupyterlab" {
-  count    = data.coder_workspace.me.start_count
-  source   = "registry.coder.com/modules/jupyterlab/coder"
-  version  = "1.0.23"
-  agent_id = coder_agent.main.id
-  subdomain = false
-}
+#module "jetbrains_gateway" {
+#  count          = data.coder_workspace.me.start_count
+#  source         = "registry.coder.com/modules/jetbrains-gateway/coder"
+#  version        = "1.0.25"
+#  agent_id       = coder_agent.main.id
+#  agent_name     = "main"
+#  folder         = "/home/${local.username}"
+#  jetbrains_ides = ["CL", "GO", "IU", "PY", "WS"]
+#  default        = "IU"
+#}
+#
+#module "filebrowser" {
+#  count      = data.coder_workspace.me.start_count
+#  source   = "registry.coder.com/modules/filebrowser/coder"
+#  version  = "1.0.23"
+#  agent_name = "main"
+#  agent_id = coder_agent.main.id
+#  subdomain  = false
+#  database_path = ".config/filebrowser.db"
+#}
+#
+#module "jupyterlab" {
+#  count    = data.coder_workspace.me.start_count
+#  source   = "registry.coder.com/modules/jupyterlab/coder"
+#  version  = "1.0.23"
+#  agent_id = coder_agent.main.id
+#  subdomain = false
+#}
