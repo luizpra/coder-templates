@@ -1,8 +1,10 @@
 FROM ubuntu
+ARG GUID
 
 SHELL ["/bin/bash", "-c"]
 
 ENV DEBIAN_FRONTEND=noninteractive
+RUN groupadd -g 1000 docker
 
 # Install the Docker apt repository
 RUN apt-get update && \

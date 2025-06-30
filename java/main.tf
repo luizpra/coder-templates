@@ -168,6 +168,7 @@ resource "docker_image" "main" {
     context = "./build"
     build_args = {
       USER = local.username
+      GUID = 1000
       JAVA_VERSION = data.coder_parameter.java_version.value
     }
     no_cache = true
