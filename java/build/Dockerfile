@@ -5,7 +5,7 @@ SHELL ["/bin/bash", "-c"]
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-#RUN groupadd -g $GUID docker
+RUN groupadd -g $GUID -f docker
 
 # Install the Docker apt repository
 RUN apt-get update && \

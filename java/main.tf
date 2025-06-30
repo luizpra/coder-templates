@@ -28,6 +28,13 @@ data "coder_workspace" "me" {
 data "coder_workspace_owner" "me" {
 }
 
+data "coder_parameter" "docker_group" {
+  name = "docker-group"
+  description = "Docker group on host"
+  type = "number"
+  default = 999
+}
+
 data "coder_parameter" "java_version" {
   name = "java-version"
   description = "JDK runtime version"
@@ -168,7 +175,7 @@ resource "docker_image" "main" {
     context = "./build"
     build_args = {
       USER = local.username
-      GUID = 1000
+      GUID = data.coder_parameter.docker_group.value
       JAVA_VERSION = data.coder_parameter.java_version.value
     }
     no_cache = true
