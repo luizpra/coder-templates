@@ -185,6 +185,11 @@ resource "docker_image" "main" {
   }
 }
 
+resource "docker_network" "pipeline" {
+  name   = "coder-${data.coder_workspace_owner.me.name}-${lower(data.coder_workspace.me.name)}"
+  driver = "bridge"
+}
+
 resource "docker_container" "workspace" {
   count = data.coder_workspace.me.start_count
   image = docker_image.main.name
@@ -211,6 +216,9 @@ resource "docker_container" "workspace" {
     host_path = "/var/run/docker.sock"
     container_path = "/var/run/docker.sock"
     read_only = true
+  }
+  networks_advanced {
+    name = docker_network.pipeline.name
   }
 }
 
