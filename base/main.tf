@@ -34,6 +34,13 @@ data "coder_workspace" "me" {
 data "coder_workspace_owner" "me" {
 }
 
+data "coder_parameter" "docker_group" {
+  name        = "docker-group"
+  description = "Docker group on host"
+  type        = "number"
+  default     = 999
+}
+
 resource "coder_agent" "main" {
   arch           = data.coder_provisioner.me.arch
   os             = "linux"
@@ -70,9 +77,9 @@ resource "coder_agent" "main" {
   EOT
 
   env = {
-    GIT_AUTHOR_NAME = coalesce(data.coder_workspace_owner.me.full_name, data.coder_workspace_owner.me.name)
+    GIT_AUTHOR_NAME     = coalesce(data.coder_workspace_owner.me.full_name, data.coder_workspace_owner.me.name)
     GIT_AUTHOR_EMAIL    = "${data.coder_workspace_owner.me.email}"
-    GIT_COMMITTER_NAME = coalesce(data.coder_workspace_owner.me.full_name, data.coder_workspace_owner.me.name)
+    GIT_COMMITTER_NAME  = coalesce(data.coder_workspace_owner.me.full_name, data.coder_workspace_owner.me.name)
     GIT_COMMITTER_EMAIL = "${data.coder_workspace_owner.me.email}"
   }
 
@@ -118,13 +125,13 @@ resource "coder_agent" "main" {
 
   metadata {
     display_name = "Load Average (Host)"
-    key = "6_load_host"
+    key          = "6_load_host"
     # get load avg scaled by number of cores
-    script       = <<EOT
+    script   = <<EOT
       echo "`cat /proc/loadavg | awk '{ print $1 }'` `nproc`" | awk '{ printf "%0.2f", $1/$2 }'
     EOT
-    interval     = 60
-    timeout      = 1
+    interval = 60
+    timeout  = 1
   }
 
   metadata {
@@ -170,6 +177,7 @@ resource "docker_image" "main" {
     build_args = {
       USER    = local.username
       USER_ID = var.user_id
+      GUID    = data.coder_parameter.docker_group.value
     }
     no_cache = true
   }
@@ -178,6 +186,10 @@ resource "docker_image" "main" {
   }
 }
 
+resource "docker_network" "pipeline" {
+  name   = "coder-${data.coder_workspace_owner.me.name}-${lower(data.coder_workspace.me.name)}"
+  driver = "bridge"
+}
 
 resource "docker_container" "workspace" {
   count = data.coder_workspace.me.start_count
@@ -207,16 +219,20 @@ resource "docker_container" "workspace" {
     container_path = "/var/run/docker.sock"
     read_only      = true
   }
+  networks_advanced {
+    name = docker_network.pipeline.name
+  }
+
 }
 
-module "kasmvnc" {
-  count               = data.coder_workspace.me.start_count
-  source              = "registry.coder.com/coder/kasmvnc/coder"
-  version             = "1.2.0"
-  agent_id            = coder_agent.main.id
-  desktop_environment = "xfce"
-  subdomain           = true
-}
+# module "kasmvnc" {
+#   count               = data.coder_workspace.me.start_count
+#   source              = "registry.coder.com/coder/kasmvnc/coder"
+#   version             = "1.2.0"
+#   agent_id            = coder_agent.main.id
+#   desktop_environment = "xfce"
+#   subdomain           = true
+# }
 
 #module "jetbrains_gateway" {
 #  count          = data.coder_workspace.me.start_count
@@ -229,15 +245,15 @@ module "kasmvnc" {
 #  default        = "IU"
 #}
 #
-#module "filebrowser" {
-#  count      = data.coder_workspace.me.start_count
-#  source   = "registry.coder.com/modules/filebrowser/coder"
-#  version  = "1.0.23"
-#  agent_name = "main"
-#  agent_id = coder_agent.main.id
-#  subdomain  = false
-#  database_path = ".config/filebrowser.db"
-#}
+module "filebrowser" {
+  count         = data.coder_workspace.me.start_count
+  source        = "registry.coder.com/modules/filebrowser/coder"
+  version       = "1.0.23"
+  agent_name    = "main"
+  agent_id      = coder_agent.main.id
+  subdomain     = false
+  database_path = ".config/filebrowser.db"
+}
 #
 #module "jupyterlab" {
 #  count    = data.coder_workspace.me.start_count

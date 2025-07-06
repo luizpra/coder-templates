@@ -1,11 +1,12 @@
 FROM ubuntu
+ARG GUID=1000
 
 SHELL ["/bin/bash", "-c"]
 
 ENV DEBIAN_FRONTEND=noninteractive
 ARG USER_ID=$USER_ID
 
-RUN groupadd -g 999 docker
+RUN groupadd -g $GUID docker
 
 # Install the Docker apt repository
 RUN apt-get update && \
@@ -52,6 +53,7 @@ RUN apt-get update && \
     vim \
     wget \
     s3cmd \
+    calibre \
     rsync && \
 # Install latest Git using their official PPA
     add-apt-repository ppa:git-core/ppa && \
@@ -80,7 +82,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 RUN userdel -r ubuntu && \
-    useradd --groups sudo --no-create-home --shell /bin/bash --uid ${USER_ID:-1000} ${USER} \
+    useradd --groups sudo,docker --no-create-home --shell /bin/bash --uid ${USER_ID:-1000} ${USER} \
 	&& echo "${USER} ALL=(ALL) NOPASSWD:ALL" >/etc/sudoers.d/${USER} \
 	&& chmod 0440 /etc/sudoers.d/${USER}
 USER ${USER}
