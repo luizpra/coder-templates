@@ -6,6 +6,10 @@ terraform {
     docker = {
       source = "kreuzwerker/docker"
     }
+    ad = {
+      source  = "hashicorp/ad"
+      version = "0.5.0"
+    }
   }
 }
 
@@ -262,3 +266,20 @@ module "filebrowser" {
 #  agent_id = coder_agent.main.id
 #  subdomain = false
 #}
+
+resource "coder_script" "calibre" {
+  agent_id     = coder_agent.main.id
+  display_name = "Calibre"
+  script       = "calibre-server --disable-auth --port 8084 /home/luiz/.calibre-library 2>&1 &"
+  run_on_start = true
+}
+
+resource "coder_app" "calibre" {
+  agent_id     = coder_agent.main.id
+  slug         = "calibre"
+  display_name = "calibre"
+  icon         = "${data.coder_workspace.me.access_url}/icon/code.svg"
+  url          = "http://localhost:8084"
+  share        = "owner"
+  subdomain    = false
+}
