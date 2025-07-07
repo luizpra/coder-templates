@@ -270,7 +270,7 @@ module "filebrowser" {
 resource "coder_script" "calibre" {
   agent_id     = coder_agent.main.id
   display_name = "Calibre"
-  script       = "calibre-server --disable-auth --port 8084 /home/luiz/.calibre-library 2>&1 &"
+  script       = "calibre-server --disable-auth --port 8084 /home/luiz/.calibre-library >>/dev/null 2>&1 &"
   run_on_start = true
 }
 
