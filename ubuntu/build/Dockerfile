@@ -54,6 +54,7 @@ RUN apt-get update && \
     wget \
     s3cmd \
     calibre \
+    iputils-ping \
     rsync && \
 # Install latest Git using their official PPA
     add-apt-repository ppa:git-core/ppa && \
