@@ -32,3 +32,13 @@ jobs:
           name: ${{ steps.latest_commit.outputs.hash }}
           message: ${{ steps.commit_title.outputs.title }}
           coder_session_token: ${{ secrets.CODER_SESSION_TOKEN }}
+                
+      - name: Update Coder Template ubuntu
+        uses: matifali/update-coder-template@v3
+        with:
+          id: ubuntu
+          dir: ubuntu
+          url: https://coder.iztec.dev
+          name: ${{ steps.latest_commit.outputs.hash }}
+          message: ${{ steps.commit_title.outputs.title }}
+          coder_session_token: ${{ secrets.CODER_SESSION_TOKEN }}
