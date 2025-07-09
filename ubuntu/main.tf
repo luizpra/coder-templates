@@ -283,3 +283,15 @@ resource "coder_app" "calibre" {
   share        = "owner"
   subdomain    = false
 }
+
+resource "coder_script" "test" {
+  agent_id     = coder_agent.pipeline.id
+  display_name = "test"
+  icon         = "/icon/database.svg"
+  cron         = "*/5 * * * *"
+  script       = <<EOF
+    #!/bin/sh
+    echo "Hello from Coder script! time now is $(date)" >> /tmp/test-script.log
+  EOF
+}
+
