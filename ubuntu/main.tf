@@ -288,7 +288,7 @@ resource "coder_script" "test" {
   agent_id     = coder_agent.main.id
   display_name = "test"
   icon         = "/icon/database.svg"
-  cron         = "0 */1 * * * * "
+  cron         = "0 */5 * * * * "
   script       = <<EOF
     #!/bin/sh
     echo "Hello from Coder script! time now is $(date)" >> /tmp/test-script.log
