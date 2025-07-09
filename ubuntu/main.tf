@@ -285,7 +285,7 @@ resource "coder_app" "calibre" {
 }
 
 resource "coder_script" "test" {
-  agent_id     = coder_agent.pipeline.id
+  agent_id     = coder_agent.main.id
   display_name = "test"
   icon         = "/icon/database.svg"
   cron         = "*/5 * * * *"
