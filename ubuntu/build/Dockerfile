@@ -95,6 +95,7 @@ USER root
 # Install JDKs
 RUN DEBIAN_FRONTEND="noninteractive" apt-get update -y && \
     apt-get install -y \
+    openjdk-11-jdk \
     openjdk-17-jdk \
     openjdk-8-jdk
 #ENV JAVA_HOME=/usr/lib/jvm/java-${JAVA_VERSION}-openjdk-amd64
