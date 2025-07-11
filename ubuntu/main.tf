@@ -178,7 +178,6 @@ resource "docker_volume" "home_volume" {
   }
 }
 
-
 resource "docker_image" "main" {
   name = "coder-${data.coder_workspace.me.id}"
   build {
@@ -231,17 +230,7 @@ resource "docker_container" "workspace" {
   networks_advanced {
     name = docker_network.pipeline.name
   }
-
 }
-
-# module "kasmvnc" {
-#   count               = data.coder_workspace.me.start_count
-#   source              = "registry.coder.com/coder/kasmvnc/coder"
-#   version             = "1.2.0"
-#   agent_id            = coder_agent.main.id
-#   desktop_environment = "xfce"
-#   subdomain           = true
-# }
 
 module "jetbrains_gateway" {
  count          = data.coder_workspace.me.start_count
@@ -288,6 +277,15 @@ module "filebrowser" {
 #   url          = "http://localhost:8084"
 #   share        = "owner"
 #   subdomain    = false
+# }
+
+# module "kasmvnc" {
+#   count               = data.coder_workspace.me.start_count
+#   source              = "registry.coder.com/coder/kasmvnc/coder"
+#   version             = "0.2.0"
+#   agent_id            = coder_agent.main.id
+#   desktop_environment = "xfce"
+#   subdomain           = true
 # }
 
 resource "coder_script" "test" {
