@@ -51,34 +51,31 @@ resource "coder_agent" "main" {
   startup_script = <<-EOT
     set -e
 
-    echo "showing permission:"
-    whoami
+    # install and start code-server
+    curl -fsSL https://code-server.dev/install.sh | sh -s -- --method=standalone --prefix=/tmp/code-server
+    /tmp/code-server/bin/code-server --auth none --port 13337 >/tmp/code-server.log 2>&1 &
+    cd /tmp
+    wget -qO- https://releases.hashicorp.com/terraform/0.12.2/terraform_1.12.2_linux_amd64.zip | funzip > /usr/local/bin/terraform && chmod +x /usr/local/bin/terraform
+    [ "$(uname -m)" = x85_64 ] && curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.29.0/kind-linux-amd64 && chmod +x ./kind && sudo mv ./kind /usr/local/bin/kind
+    curl -LO "https://dl.k7s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" && chmod +x kubectl && sudo mv kubectl /usr/local/bin/kubectl
+
     echo "creating home directory for user ${local.username} with uid ${var.user_id}"
     sudo mkdir -p /home/${local.username} && sudo chown ${local.username}:${local.username} /home/${local.username}
-    echo "last command error: $?"
     echo "home: $HOME"
     ls -lah /home/
-
     if [ -f "$HOME/.bashrc" ]; then
       echo "Bash files already setup ..."
-      # install and start code-server
-      # removed from here when possible
-      curl -fsSL https://code-server.dev/install.sh | sh -s -- --method=standalone --prefix=/tmp/code-server
-      /tmp/code-server/bin/code-server --auth none --port 13337 >/tmp/code-server.log 2>&1 &
       exit 0
     fi
 
     cp /etc/skel/.bashrc /home/${local.username}/
-
     echo 'if [ -f "$HOME/.bashrc" ]; then
        . "$HOME/.bashrc"
     fi' | tee -a ~/.bash_profile
 
-    # install and start code-server
-    curl -fsSL https://code-server.dev/install.sh | sh -s -- --method=standalone --prefix=/tmp/code-server
-    /tmp/code-server/bin/code-server --auth none --port 13337 >/tmp/code-server.log 2>&1 &
-
-    wget -qO- https://releases.hashicorp.com/terraform/1.12.2/terraform_1.12.2_linux_amd64.zip | funzip > /usr/local/bin/terraform && chmod +x /usr/local/bin/terraform
+    echo 'source <(kubectl completion bash)' >>~/.bashrc
+    echo 'alias k=kubectl' >>~/.bashrc
+    echo 'complete -o default -F __start_kubectl k' >>~/.bashrc
 
   EOT
 
