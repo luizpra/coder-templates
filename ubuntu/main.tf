@@ -59,6 +59,8 @@ resource "coder_agent" "main" {
     curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.29.0/kind-linux-amd64 && chmod +x ./kind && sudo mv ./kind /usr/local/bin/kind
     curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" && chmod +x kubectl && sudo mv kubectl /usr/local/bin/kubectl
     curl -L https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv5.7.0/kustomize_v5.7.0_linux_amd64.tar.gz | tar xz && sudo mv kustomize /usr/local/bin/kustomize
+    curl -s https://fluxcd.io/install.sh | sudo bash
+    curl -L https://github.com/derailed/k9s/releases/download/v0.50.7/k9s_Linux_amd64.tar.gz | tar xz k9s && chmod +x k9s && sudo mv k9s /usr/local/bin/k9s
 
     echo "creating home directory for user ${local.username} with uid ${var.user_id}"
     sudo mkdir -p /home/${local.username} && sudo chown ${local.username}:${local.username} /home/${local.username}
@@ -78,6 +80,7 @@ resource "coder_agent" "main" {
     echo 'alias k=kubectl' >>~/.bashrc
     echo 'complete -o default -F __start_kubectl k' >>~/.bashrc
     echo 'set -o vi' >>~/.bashrc
+    . <(flux completion bash)
 
   EOT
 
