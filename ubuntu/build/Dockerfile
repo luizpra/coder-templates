@@ -53,6 +53,7 @@ RUN apt-get update && \
     vim \
     wget \
     s3cmd \
+    golang \
     calibre \
     iputils-ping \
     rsync && \
