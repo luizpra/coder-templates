@@ -238,17 +238,17 @@ resource "docker_container" "workspace" {
 #   subdomain           = true
 # }
 
-#module "jetbrains_gateway" {
-#  count          = data.coder_workspace.me.start_count
-#  source         = "registry.coder.com/modules/jetbrains-gateway/coder"
-#  version        = "1.0.25"
-#  agent_id       = coder_agent.main.id
-#  agent_name     = "main"
-#  folder         = "/home/${local.username}"
-#  jetbrains_ides = ["CL", "GO", "IU", "PY", "WS"]
-#  default        = "IU"
-#}
-#
+module "jetbrains_gateway" {
+ count          = data.coder_workspace.me.start_count
+ source         = "registry.coder.com/modules/jetbrains-gateway/coder"
+ version        = "1.0.25"
+ agent_id       = coder_agent.main.id
+ agent_name     = "main"
+ folder         = "/home/${local.username}"
+ jetbrains_ides = ["CL", "GO", "IU", "PY", "WS"]
+ default        = "IU"
+}
+
 module "filebrowser" {
   count         = data.coder_workspace.me.start_count
   source        = "registry.coder.com/modules/filebrowser/coder"
@@ -258,6 +258,7 @@ module "filebrowser" {
   subdomain     = false
   database_path = ".config/filebrowser.db"
 }
+
 #
 #module "jupyterlab" {
 #  count    = data.coder_workspace.me.start_count
@@ -267,22 +268,22 @@ module "filebrowser" {
 #  subdomain = false
 #}
 
-resource "coder_script" "calibre" {
-  agent_id     = coder_agent.main.id
-  display_name = "Calibre"
-  script       = "calibre-server --disable-auth --port 8084 /home/luiz/.calibre-library >>/dev/null 2>&1 &"
-  run_on_start = true
-}
+# resource "coder_script" "calibre" {
+#   agent_id     = coder_agent.main.id
+#   display_name = "Calibre"
+#   script       = "calibre-server --disable-auth --port 8084 /home/luiz/.calibre-library >>/dev/null 2>&1 &"
+#   run_on_start = true
+# }
 
-resource "coder_app" "calibre" {
-  agent_id     = coder_agent.main.id
-  slug         = "calibre"
-  display_name = "calibre"
-  icon         = "${data.coder_workspace.me.access_url}/icon/code.svg"
-  url          = "http://localhost:8084"
-  share        = "owner"
-  subdomain    = false
-}
+# resource "coder_app" "calibre" {
+#   agent_id     = coder_agent.main.id
+#   slug         = "calibre"
+#   display_name = "calibre"
+#   icon         = "${data.coder_workspace.me.access_url}/icon/code.svg"
+#   url          = "http://localhost:8084"
+#   share        = "owner"
+#   subdomain    = false
+# }
 
 resource "coder_script" "test" {
   agent_id     = coder_agent.main.id
