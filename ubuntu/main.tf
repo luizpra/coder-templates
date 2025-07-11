@@ -61,6 +61,7 @@ resource "coder_agent" "main" {
     curl -L https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv5.7.0/kustomize_v5.7.0_linux_amd64.tar.gz | tar xz && sudo mv kustomize /usr/local/bin/kustomize
     curl -s https://fluxcd.io/install.sh | sudo bash
     curl -L https://github.com/derailed/k9s/releases/download/v0.50.7/k9s_Linux_amd64.tar.gz | tar xz k9s && chmod +x k9s && sudo mv k9s /usr/local/bin/k9s
+    curl -sL https://github.com/bitwarden/sdk-sm/releases/download/bws-v1.0.0/bws-x86_64-unknown-linux-gnu-1.0.0.zip | funzip | sudo tee /usr/local/bin/bws > /dev/null && sudo chmod +x /usr/local/bin/bws
 
     echo "creating home directory for user ${local.username} with uid ${var.user_id}"
     sudo mkdir -p /home/${local.username} && sudo chown ${local.username}:${local.username} /home/${local.username}
