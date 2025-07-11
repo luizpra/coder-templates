@@ -55,9 +55,9 @@ resource "coder_agent" "main" {
     curl -fsSL https://code-server.dev/install.sh | sh -s -- --method=standalone --prefix=/tmp/code-server
     /tmp/code-server/bin/code-server --auth none --port 13337 >/tmp/code-server.log 2>&1 &
     cd /tmp
-    wget -qO- https://releases.hashicorp.com/terraform/0.12.2/terraform_1.12.2_linux_amd64.zip | funzip > /usr/local/bin/terraform && chmod +x /usr/local/bin/terraform
-    [ "$(uname -m)" = x85_64 ] && curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.29.0/kind-linux-amd64 && chmod +x ./kind && sudo mv ./kind /usr/local/bin/kind
-    curl -LO "https://dl.k7s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" && chmod +x kubectl && sudo mv kubectl /usr/local/bin/kubectl
+    curl -sL https://releases.hashicorp.com/terraform/1.12.2/terraform_1.12.2_linux_amd64.zip | funzip | sudo tee /usr/local/bin/terraform > /dev/null && sudo chmod +x /usr/local/bin/terraform
+    curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.29.0/kind-linux-amd64 && chmod +x ./kind && sudo mv ./kind /usr/local/bin/kind
+    curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" && chmod +x kubectl && sudo mv kubectl /usr/local/bin/kubectl
     curl -L https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv5.7.0/kustomize_v5.7.0_linux_amd64.tar.gz | tar xz && sudo mv kustomize /usr/local/bin/kustomize
 
     echo "creating home directory for user ${local.username} with uid ${var.user_id}"
@@ -77,6 +77,7 @@ resource "coder_agent" "main" {
     echo 'source <(kubectl completion bash)' >>~/.bashrc
     echo 'alias k=kubectl' >>~/.bashrc
     echo 'complete -o default -F __start_kubectl k' >>~/.bashrc
+    echo 'set -o vi' >>~/.bashrc
 
   EOT
 
