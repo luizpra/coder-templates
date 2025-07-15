@@ -48,6 +48,7 @@ data "coder_parameter" "docker_group" {
 data "coder_parameter" "java_version" {
   name = "java-version"
   description = "JDK runtime version"
+  mutable = true
   type = "number"
   default = 11
   
