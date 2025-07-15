@@ -45,6 +45,28 @@ data "coder_parameter" "docker_group" {
   default     = 999
 }
 
+data "coder_parameter" "java_version" {
+  name = "java-version"
+  description = "JDK runtime version"
+  type = "number"
+  default = 11
+  
+  option {
+    name = "17"
+    value = 17
+  }
+
+  option {
+    name = "11"
+    value = 11
+  }
+  
+  option {
+    name = "8"
+    value = 8
+  }
+}
+
 resource "coder_agent" "main" {
   arch           = data.coder_provisioner.me.arch
   os             = "linux"
@@ -186,6 +208,7 @@ resource "docker_image" "main" {
       USER    = local.username
       USER_ID = var.user_id
       GUID    = data.coder_parameter.docker_group.value
+      JAVA_VERSION = data.coder_parameter.java_version.value
     }
     no_cache = true
   }
