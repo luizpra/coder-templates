@@ -77,6 +77,7 @@ ENV LANGUAGE=en_US.UTF-8
 ENV LC_ALL=en_US.UTF-8
 
 ARG USER=coder
+ARG JAVA_VERSION=11
 
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
     apt-get install -y --no-install-recommends --no-install-suggests dbus-x11 libdatetime-perl openssl ssl-cert xfce4 xfce4-goodies && \
@@ -98,8 +99,12 @@ RUN DEBIAN_FRONTEND="noninteractive" apt-get update -y && \
     openjdk-11-jdk \
     openjdk-17-jdk \
     openjdk-8-jdk
-#ENV JAVA_HOME=/usr/lib/jvm/java-${JAVA_VERSION}-openjdk-amd64
-#ENV PATH=$PATH:$JAVA_HOME/bin
+
+ENV JAVA_HOME=/usr/lib/jvm/java-${JAVA_VERSION}-openjdk-amd64
+ENV PATH=$PATH:$JAVA_HOME/bin
+
+RUN DEBIAN_FRONTEND="noninteractive" update-alternatives --install /usr/bin/java java /usr/lib/jvm/java-${JAVA_VERSION}-openjdk-amd64/bin/java 1081 && \
+    update-alternatives --set java /usr/lib/jvm/java-${JAVA_VERSION}-openjdk-amd64/bin/java
 
 # Install Maven
 ARG MAVEN_VERSION=3.9.10
