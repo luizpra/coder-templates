@@ -42,6 +42,7 @@ RUN apt-get update && \
     man \
     netcat-openbsd \
     net-tools \
+    iproute2 \
     pipx \
     python3 \
     python3-pip \
