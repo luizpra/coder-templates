@@ -28,6 +28,7 @@ RUN echo \
 RUN apt-get update && \
     apt-get install --yes --no-install-recommends --no-install-suggests \
     bash \
+    bash-completion \
     build-essential \
     calibre \
     containerd.io \
