@@ -48,6 +48,7 @@ RUN apt-get update && \
     net-tools \
     iputils-ping \
     iproute2 \
+    openssh-client \
     pipx \
     python3 \
     python3-pip \
