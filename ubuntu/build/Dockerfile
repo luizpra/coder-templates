@@ -29,12 +29,15 @@ RUN apt-get update && \
     apt-get install --yes --no-install-recommends --no-install-suggests \
     bash \
     build-essential \
+    calibre \
     containerd.io \
     curl \
     docker-ce \
     docker-ce-cli \
     docker-buildx-plugin \
     docker-compose-plugin \
+    git-flow \
+    golang \
     htop \
     iputils-ping \
     jq \
@@ -42,21 +45,19 @@ RUN apt-get update && \
     man \
     netcat-openbsd \
     net-tools \
+    iputils-ping \
     iproute2 \
     pipx \
     python3 \
     python3-pip \
     software-properties-common \
+    s3cmd \
     sudo \
     systemd \
     systemd-sysv \
     unzip \
     vim \
     wget \
-    s3cmd \
-    golang \
-    calibre \
-    iputils-ping \
     rsync && \
 # Install latest Git using their official PPA
     add-apt-repository ppa:git-core/ppa && \
