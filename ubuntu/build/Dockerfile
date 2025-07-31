@@ -71,6 +71,7 @@ RUN systemctl enable docker
 
 # Create a symlink for standalone docker-compose usage
 RUN ln -s /usr/libexec/docker/cli-plugins/docker-compose /usr/bin/docker-compose
+RUN ln -s /usr/bin/python3 /usr/bin/python
 
 # Generate the desired locale (en_US.UTF-8)
 RUN locale-gen en_US.UTF-8
