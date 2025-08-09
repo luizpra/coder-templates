@@ -54,6 +54,7 @@ RUN apt-get update && \
     python3-pip \
     software-properties-common \
     s3cmd \
+	sqlite3 \
     sudo \
     systemd \
     systemd-sysv \
