@@ -45,6 +45,14 @@ data "coder_parameter" "docker_group" {
   default     = 999
 }
 
+data "coder_parameter" "bws_access_token" {
+  name      = "BWS Access Token"
+  type      = "string"
+  mutable   = true
+  ephemeral = false
+  sensitive = true
+}
+
 data "coder_parameter" "java_version" {
   name = "java-version"
   description = "JDK runtime version"
