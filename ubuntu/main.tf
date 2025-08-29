@@ -17,6 +17,13 @@ locals {
   username = data.coder_workspace_owner.me.name
 }
 
+variable "bws_access_token" {
+  description = "Bws access token"
+  type        = "string"
+  sensitive   = true
+  default     = "afafa"
+}
+
 variable "user_id" {
   description = "User id on host system, used to set permissions on the home"
   type        = number
@@ -85,7 +92,7 @@ resource "coder_agent" "main" {
     set -e
 
     echo "diplaying it ..."
-    echo ${data.coder_parameter.bws_access_token.value}
+    echo ${var.bws_access_token}
     echo "-----------------------"
 
 
@@ -128,7 +135,7 @@ resource "coder_agent" "main" {
     GIT_AUTHOR_EMAIL    = "${data.coder_workspace_owner.me.email}"
     GIT_COMMITTER_NAME  = coalesce(data.coder_workspace_owner.me.full_name, data.coder_workspace_owner.me.name)
     GIT_COMMITTER_EMAIL = "${data.coder_workspace_owner.me.email}"
-    BWS_ACCESS_TOKEN    = "${data.coder_parameter.bws_access_token.value}"
+    BWS_ACCESS_TOKEN    = "${var.bws_access_token}"
   }
 
   metadata {
