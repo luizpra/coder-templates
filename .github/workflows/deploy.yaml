@@ -40,7 +40,7 @@ jobs:
       - name: Show value
         run: |
           echo "-----------------"
-          echo "${TF_VAR_bws_access_token}"
+          echo "${BWS_ACCESS_TOKEN}"
                 
       - name: Update Coder Template ubuntu
         uses: matifali/update-coder-template@v3
