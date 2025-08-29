@@ -17,13 +17,6 @@ locals {
   username = data.coder_workspace_owner.me.name
 }
 
-variable "bws_access_token" {
-  description = "Bws access token"
-  type        = string
-  sensitive   = true
-  ephemeral   = true
-}
-
 variable "user_id" {
   description = "User id on host system, used to set permissions on the home"
   type        = number
@@ -90,11 +83,6 @@ resource "coder_agent" "main" {
   os             = "linux"
   startup_script = <<-EOT
     set -e
-
-    echo "diplaying it ..."
-    echo ${var.bws_access_token}
-    echo "-----------------------"
-
 
     # install and start code-server
     curl -fsSL https://code-server.dev/install.sh | sh -s -- --method=standalone --prefix=/tmp/code-server
