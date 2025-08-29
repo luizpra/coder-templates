@@ -36,6 +36,11 @@ jobs:
           name: ${{ steps.latest_commit.outputs.hash }}
           message: ${{ steps.commit_title.outputs.title }}
           coder_session_token: ${{ secrets.CODER_SESSION_TOKEN }}
+    
+      - name: Show value
+        run: |
+          echo "-----------------"
+          echo "${TF_VAR_bws_access_token}"
                 
       - name: Update Coder Template ubuntu
         uses: matifali/update-coder-template@v3
