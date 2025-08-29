@@ -42,6 +42,7 @@ data "coder_parameter" "bws_access_token" {
   name         = "bws_access_token"
   display_name = "BWS Access TOKEN"
   type         = "string"
+  default      = "123456"
   mutable      = true
   ephemeral    = true
   order        = 1
