@@ -19,7 +19,7 @@ locals {
 
 variable "bws_access_token" {
   description = "Bws access token"
-  type        = "string"
+  type        = strin
   sensitive   = true
   default     = "afafa"
 }
