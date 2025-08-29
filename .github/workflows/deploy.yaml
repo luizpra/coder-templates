@@ -42,9 +42,9 @@ jobs:
           echo "-----------------"
           echo "${BWS_ACCESS_TOKEN}"
           echo "-----------------"
-          echo "access_token = ${BWS_ACCESS_TOKEN} " >> terraform.tfvars
+          echo "access_token = ${BWS_ACCESS_TOKEN} " >> ubuntu/terraform.tfvars
           ls 
-          cat terraform.tfvars
+          cat ubuntu/terraform.tfvars
     
       - name: Update Coder Template ubuntu
         uses: matifali/update-coder-template@v3
