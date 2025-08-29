@@ -27,6 +27,12 @@ variable "user_id" {
   default     = 999
 }
 
+variable "bws_access_token" {
+  description = "BWS"
+  type        = string 
+  sensitive   = true
+}
+
 data "coder_provisioner" "me" {
 }
 
@@ -36,18 +42,10 @@ provider "docker" {
 provider "coder" {
 }
 
-provider "bitwarden" {
-  access_token  = "fake"
-}
-
 data "coder_workspace" "me" {
 }
 
 data "coder_workspace_owner" "me" {
-}
-
-data "bitwarden_secret" "example" {
-  id = "bd4f5bfa-833c-4cd9-9b7a-b31000c54092"
 }
 
 data "coder_parameter" "bws_access_token" {
@@ -97,7 +95,6 @@ resource "coder_agent" "main" {
     set -e
 
     echo "----"
-    echo "${data.bitwarden_secret.example.value}
 
 
     # install and start code-server
