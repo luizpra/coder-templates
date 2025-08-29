@@ -27,20 +27,6 @@ variable "user_id" {
   default     = 999
 }
 
-#variable "bws_access_token" {
-#  description = "BWS"
-#  type        = string 
-#  sensitive   = true
-#  default     = "1234"
-#  ephemeral   = true
-#}
-
-variable "access_token" {
-  description = "just token"
-  type  = string
-  sensitive = true
-}
-
 data "coder_provisioner" "me" {
 }
 
