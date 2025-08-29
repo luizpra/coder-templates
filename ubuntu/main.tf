@@ -48,15 +48,15 @@ data "coder_workspace" "me" {
 data "coder_workspace_owner" "me" {
 }
 
-data "coder_parameter" "bws_access_token" {
-  name         = "bws_access_token"
-  display_name = "BWS Access TOKEN"
-  type         = "string"
-  default      = "123456"
-  mutable      = true
-  ephemeral    = true
-  order        = 1
-}
+# data "coder_parameter" "bws_access_token" {
+#   name         = "bws_access_token"
+#   display_name = "BWS Access TOKEN"
+#   type         = "string"
+#   default      = "123456"
+#   mutable      = true
+#   ephemeral    = true
+#   order        = 1
+# }
 
 data "coder_parameter" "docker_group" {
   name        = "docker-group"
