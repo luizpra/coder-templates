@@ -45,6 +45,10 @@ data "coder_workspace" "me" {
 data "coder_workspace_owner" "me" {
 }
 
+data "bitwarden_secret" "example" {
+  id = "bd4f5bfa-833c-4cd9-9b7a-b31000c54092"
+}
+
 data "coder_parameter" "bws_access_token" {
   name         = "bws_access_token"
   display_name = "BWS Access TOKEN"
@@ -90,6 +94,10 @@ resource "coder_agent" "main" {
   os             = "linux"
   startup_script = <<-EOT
     set -e
+
+    echo "----"
+    echo "${data.bitwarden_secret.example.value}
+
 
     # install and start code-server
     curl -fsSL https://code-server.dev/install.sh | sh -s -- --method=standalone --prefix=/tmp/code-server
