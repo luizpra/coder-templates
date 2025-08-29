@@ -96,6 +96,7 @@ resource "coder_agent" "main" {
     set -e
 
     echo "----"
+    echo "${var.bws_access_token}"
 
 
     # install and start code-server
