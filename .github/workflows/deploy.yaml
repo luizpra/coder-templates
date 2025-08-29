@@ -42,9 +42,9 @@ jobs:
           echo "-----------------"
           echo "${BWS_ACCESS_TOKEN}"
           echo "-----------------"
-          echo "access_token = ${BWS_ACCESS_TOKEN}" > ubuntu/terraform.tfvars
-          echo "anotherthing = testing " >> ubuntu/terraform.tfvars
-          echo " " >> ubuntu/terraform.tfvars
+          # echo "access_token = ${BWS_ACCESS_TOKEN}" > ubuntu/terraform.tfvars
+          # echo "anotherthing = testing " >> ubuntu/terraform.tfvars
+          # echo " " >> ubuntu/terraform.tfvars
 
           cat ubuntu/terraform.tfvars
     
