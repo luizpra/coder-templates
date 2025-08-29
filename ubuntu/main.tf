@@ -31,6 +31,7 @@ variable "bws_access_token" {
   description = "BWS"
   type        = string 
   sensitive   = true
+  default     = "1234"
 }
 
 data "coder_provisioner" "me" {
