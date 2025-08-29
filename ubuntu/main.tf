@@ -50,32 +50,21 @@ provider "docker" {
 provider "coder" {
 }
 
-provider "bitwarden" {
-  access_token = var.access_token
-}
-
-
 data "coder_workspace" "me" {
 }
 
 data "coder_workspace_owner" "me" {
 }
 
-# data "coder_parameter" "bws_access_token" {
-#   name         = "bws_access_token"
-#   display_name = "BWS Access TOKEN"
-#   type         = "string"
-#   default      = "123456"
-#   mutable      = true
-#   ephemeral    = true
-#   order        = 1
-# }
-
-
-data "bitwarden_secret" "example" {
-  id = "a2874b80-1d38-4ecc-a3e9-b18d0010480d"
+data "coder_parameter" "bws_access_token" {
+  name         = "bws_access_token"
+  display_name = "BWS Access TOKEN"
+  type         = "string"
+  default      = "123456"
+  mutable      = true
+  ephemeral    = true
+  order        = 1
 }
-
 
 data "coder_parameter" "docker_group" {
   name        = "docker-group"
@@ -114,7 +103,7 @@ resource "coder_agent" "main" {
     set -e
 
     echo "----"
-    echo "${data.bitwarden_secret.example.value}"
+    echo "${data.coder_parameter.bws_access_token.value}"
 
 
     # install and start code-server
@@ -156,6 +145,7 @@ resource "coder_agent" "main" {
     GIT_AUTHOR_EMAIL    = "${data.coder_workspace_owner.me.email}"
     GIT_COMMITTER_NAME  = coalesce(data.coder_workspace_owner.me.full_name, data.coder_workspace_owner.me.name)
     GIT_COMMITTER_EMAIL = "${data.coder_workspace_owner.me.email}"
+    BWS_ACCESS_TOKEN    = "${data.coder_parameter.bws_access_token.value}"
   }
 
   metadata {

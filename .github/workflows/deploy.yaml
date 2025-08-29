@@ -1,9 +1,9 @@
 name:  Deploy Java Coder Template
 
-env:
-  BWS_ACCESS_TOKEN: ${{ secrets.BWS_ACCESS_TOKEN }}
-  TF_VAR_BWS_ACCESS_TOKEN: ${{ secrets.BWS_ACCESS_TOKEN }}
-  TF_VAR_access_token: ${{ secrets.BWS_ACCESS_TOKEN }}
+# env:
+#   BWS_ACCESS_TOKEN: ${{ secrets.BWS_ACCESS_TOKEN }}
+#   TF_VAR_BWS_ACCESS_TOKEN: ${{ secrets.BWS_ACCESS_TOKEN }}
+#   TF_VAR_access_token: ${{ secrets.BWS_ACCESS_TOKEN }}
 
 on:
   push:
@@ -39,16 +39,16 @@ jobs:
       #     message: ${{ steps.commit_title.outputs.title }}
       #     coder_session_token: ${{ secrets.CODER_SESSION_TOKEN }}
     
-      - name: Show value
-        run: |
-          echo "-----------------"
-          echo "${BWS_ACCESS_TOKEN}"
-          echo "-----------------"
-          touch ubuntu/terraform.tfvars
-          echo 'access_token = "'${BWS_ACCESS_TOKEN}'"' >> ubuntu/terraform.tfvars
-          echo "anotherthing = testing " >> ubuntu/terraform.tfvars
-          echo " " >> ubuntu/terraform.tfvars
-          cat ubuntu/terraform.tfvars
+      # - name: Show value
+      #   run: |
+      #     echo "-----------------"
+      #     echo "${BWS_ACCESS_TOKEN}"
+      #     echo "-----------------"
+      #     touch ubuntu/terraform.tfvars
+      #     echo 'access_token = "'${BWS_ACCESS_TOKEN}'"' >> ubuntu/terraform.tfvars
+      #     echo "anotherthing = testing " >> ubuntu/terraform.tfvars
+      #     echo " " >> ubuntu/terraform.tfvars
+      #     cat ubuntu/terraform.tfvars
     
       - name: Update Coder Template ubuntu
         uses: matifali/update-coder-template@v3
