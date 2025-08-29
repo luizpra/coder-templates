@@ -37,6 +37,7 @@ provider "coder" {
 }
 
 provider "bitwarden" {
+  access_token  = "fake"
 }
 
 data "coder_workspace" "me" {
