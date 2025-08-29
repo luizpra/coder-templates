@@ -10,6 +10,10 @@ terraform {
       source  = "hashicorp/ad"
       version = "0.5.0"
     }
+    bitwarden = {
+      source  = "maxlaverse/bitwarden"
+      version = ">= 0.16.0"
+    }
   }
 }
 
@@ -30,6 +34,9 @@ provider "docker" {
 }
 
 provider "coder" {
+}
+
+provider "bitwarden" {
 }
 
 data "coder_workspace" "me" {
