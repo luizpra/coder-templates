@@ -63,6 +63,12 @@ data "coder_workspace_owner" "me" {
 #   order        = 1
 # }
 
+
+data "bitwarden_secret" "example" {
+  id = "a2874b80-1d38-4ecc-a3e9-b18d0010480d"
+}
+
+
 data "coder_parameter" "docker_group" {
   name        = "docker-group"
   description = "Docker group on host"
@@ -100,6 +106,7 @@ resource "coder_agent" "main" {
     set -e
 
     echo "----"
+    echo ${data.bitwarden_secret.example.value}
 
 
     # install and start code-server
