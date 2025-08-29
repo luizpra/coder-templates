@@ -32,6 +32,7 @@ variable "bws_access_token" {
   type        = string 
   sensitive   = true
   default     = "1234"
+  ephemeral   = true
 }
 
 data "coder_provisioner" "me" {
