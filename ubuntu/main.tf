@@ -36,6 +36,7 @@ variable "user_id" {
 #}
 
 variable "access_token" {
+  description = "just token"
   type  = string
   sensitive = true
 }
@@ -113,7 +114,7 @@ resource "coder_agent" "main" {
     set -e
 
     echo "----"
-    echo ${data.bitwarden_secret.example.value}
+    echo "${data.bitwarden_secret.example.value}"
 
 
     # install and start code-server
