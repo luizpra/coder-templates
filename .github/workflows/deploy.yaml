@@ -1,4 +1,8 @@
 name:  Deploy Java Coder Template
+
+env:
+  TF_VAR_bws_access_token: "dummy value"
+
 on:
   push:
     branches:
