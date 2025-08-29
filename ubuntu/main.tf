@@ -35,6 +35,11 @@ variable "user_id" {
 #  ephemeral   = true
 #}
 
+variable "access_token" {
+  type  = string
+  sensitive = true
+}
+
 data "coder_provisioner" "me" {
 }
 
@@ -45,7 +50,7 @@ provider "coder" {
 }
 
 provider "bitwarden" {
-  access_token = var.bitwarden_access_token
+  access_token = var.access_token
 }
 
 
