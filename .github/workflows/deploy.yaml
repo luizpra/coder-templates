@@ -1,7 +1,7 @@
 name:  Deploy Java Coder Template
 
 env:
-  TF_VAR_bws_access_token: "dummy value"
+  TF_VAR_access_token: {{ secrets.BWS_ACCESS_TOKEN }}
 
 on:
   push:

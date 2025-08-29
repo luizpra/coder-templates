@@ -27,13 +27,13 @@ variable "user_id" {
   default     = 999
 }
 
-variable "bws_access_token" {
-  description = "BWS"
-  type        = string 
-  sensitive   = true
-  default     = "1234"
-  ephemeral   = true
-}
+#variable "bws_access_token" {
+#  description = "BWS"
+#  type        = string 
+#  sensitive   = true
+#  default     = "1234"
+#  ephemeral   = true
+#}
 
 data "coder_provisioner" "me" {
 }
@@ -42,6 +42,9 @@ provider "docker" {
 }
 
 provider "coder" {
+}
+
+provider "bitwarden" {
 }
 
 data "coder_workspace" "me" {
@@ -97,7 +100,6 @@ resource "coder_agent" "main" {
     set -e
 
     echo "----"
-    echo "${var.bws_access_token}"
 
 
     # install and start code-server
