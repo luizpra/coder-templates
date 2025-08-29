@@ -22,6 +22,7 @@ variable "bws_access_token" {
   type        = string
   sensitive   = true
   default     = "afafa"
+  ephemeral   = true
 }
 
 variable "user_id" {
