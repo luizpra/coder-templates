@@ -45,7 +45,9 @@ provider "coder" {
 }
 
 provider "bitwarden" {
+  access_token = var.bitwarden_access_token
 }
+
 
 data "coder_workspace" "me" {
 }
