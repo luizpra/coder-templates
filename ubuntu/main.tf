@@ -23,13 +23,6 @@ variable "user_id" {
   default     = 999
 }
 
-variable "bws_access_token" {
-  type        = string
-  description = "BWS Access TOKEN"
-  default     = "1234567890"
-  sensitive   = true
-}
-
 data "coder_provisioner" "me" {
 }
 
@@ -43,6 +36,15 @@ data "coder_workspace" "me" {
 }
 
 data "coder_workspace_owner" "me" {
+}
+
+data "coder_parameter" "bws_access_token" {
+  name         = "bws_access_token"
+  display_name = "BWS Access TOKEN"
+  type         = "string"
+  mutable      = true
+  ephemeral    = true
+  order        = 1
 }
 
 data "coder_parameter" "docker_group" {
@@ -82,7 +84,7 @@ resource "coder_agent" "main" {
     set -e
 
     echo "diplaying it ..."
-    echo ${var.bws_access_token}
+    echo ${data.coder_parameter.bws_access_token.value}
     echo "-----------------------"
 
 
@@ -125,7 +127,7 @@ resource "coder_agent" "main" {
     GIT_AUTHOR_EMAIL    = "${data.coder_workspace_owner.me.email}"
     GIT_COMMITTER_NAME  = coalesce(data.coder_workspace_owner.me.full_name, data.coder_workspace_owner.me.name)
     GIT_COMMITTER_EMAIL = "${data.coder_workspace_owner.me.email}"
-    BWS_ACCESS_TOKEN    = "${var.bws_access_token}"
+    BWS_ACCESS_TOKEN    = "${data.coder_parameter.bws_access_token.value}"
   }
 
   metadata {
