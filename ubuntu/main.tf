@@ -23,6 +23,13 @@ variable "user_id" {
   default     = 999
 }
 
+variable "bws_access_token" {
+  type        = string
+  description = "BWS Access TOKEN"
+  default     = "1234567890"
+  sensitive   = true
+}
+
 data "coder_provisioner" "me" {
 }
 
@@ -43,14 +50,6 @@ data "coder_parameter" "docker_group" {
   description = "Docker group on host"
   type        = "number"
   default     = 999
-}
-
-data "coder_parameter" "bws_access_token" {
-  name      = "BWS Access Token"
-  type      = "string"
-  mutable   = true
-  ephemeral = false
-  sensitive = true
 }
 
 data "coder_parameter" "java_version" {
@@ -81,6 +80,11 @@ resource "coder_agent" "main" {
   os             = "linux"
   startup_script = <<-EOT
     set -e
+
+    echo "diplaying it ..."
+    echo ${var.bws_access_token}
+    echo "-----------------------"
+
 
     # install and start code-server
     curl -fsSL https://code-server.dev/install.sh | sh -s -- --method=standalone --prefix=/tmp/code-server
